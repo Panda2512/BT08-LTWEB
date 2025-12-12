@@ -1,0 +1,70 @@
+# src/main/resources/graphql/schema.graphqls
+
+# Định nghĩa khung dữ liệu đầu vào
+input ProductInput {
+    title: String!
+    price: Float!
+    quantity: Int
+    descr: String
+    userid: Int
+    categoryId: ID!
+}
+
+# --- Định nghĩa Object Types ---
+type Category {
+    id: ID
+    name: String
+    images: String
+    products: [Product]
+}
+
+type User {
+    id: ID
+    fullname: String
+    email: String
+    phone: String
+    categories: [Category] 
+}
+
+type Product {
+    id: ID
+    title: String
+    quantity: Int
+    descr: String
+    price: Float
+    userid: Int
+    category: Category
+}
+
+# --- Định nghĩa Query (Read) ---
+type Query {
+    # 1. Hiển thị tất cả product có price từ thấp đến cao
+    getAllProductsSorted: [Product]
+    
+    # 2. Lấy tất cả product của 01 category
+    getProductsByCategory(categoryId: ID!): [Product]
+    
+    # Lấy danh sách User và Category (cho mục đích kiểm tra)
+    getAllUsers: [User]
+    getAllCategories: [Category]
+}
+
+# --- Định nghĩa Mutation (Create, Update, Delete) ---
+type Mutation {
+    # --- Product CRUD ---
+    createProduct(input: ProductInput!): Product
+    updateProduct(id: ID!, title: String, price: Float): Product
+    deleteProduct(id: ID!): Boolean
+
+    # --- Category CRUD ---
+    createCategory(name: String!, images: String): Category
+    updateCategory(id: ID!, name: String): Category
+    deleteCategory(id: ID!): Boolean
+
+    # --- User CRUD ---
+    createUser(fullname: String!, email: String!, phone: String): User
+    updateUser(id: ID!, fullname: String): User
+    deleteUser(id: ID!): Boolean
+
+    addUserToCategory(userId: ID!, categoryId: ID!): Boolean
+}
